@@ -1,31 +1,58 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
-const About = () => <h2>About</h2>
-const Company = () => <h2>Company</h2>
-const User = ({match}) => (
-	<div>
-		<h2>User: {match.params.user}</h2>
-	</div>
-)
+// you can render more than one route at any point in your app
+const routes = [
+	{
+		path: '/',
+		exact: true,
+		sidebar: () => <div>home!</div>,
+		main: () => <h2>Home</h2>,
+	},
+	{
+		path: '/bubblegum',
+		sidebar: () => <div>bubblegum!</div>,
+		main: () => <h2>Bubblegum</h2>,
+	},
+	{
+		path: '/shoelaces',
+		sidebar: () => <div>shoelaces!</div>,
+		main: () => <h2>Shoelaces</h2>,
+	}
+]
 
+// map over routes array, render either sidebar or main
 class App extends Component {
 	render() {
 		return (
 			<Router>
-				<div>
-					<ul>
-						<li><Link to='/about'>About</Link></li>
-						<li><Link to='/company'>Company</Link></li>
-						<li><Link to='/kim'>Kim</Link></li>
-						<li><Link to='/chris'>Chris</Link></li>
+				<div style={{display: 'flex'}}>
+				<div style={{
+					padding: '10px',
+					width: '40%',
+					background: '#f0f0f0'
+				}}>
+					<ul style={{listStyleType: 'none', padding: 0}}>
+						<li><Link to='/'>Home</Link></li>
+						<li><Link to='/bubblegum'>Bubblegum</Link></li>
+						<li><Link to='/shoelaces'>Shoelaces</Link></li>
 					</ul>
 
-				<Switch>
-					<Route path='/about' component={About} />
-					<Route path='/company' component={Company} />
-					<Route path='/:user' component={User} />
-				</Switch>
+					{routes.map((route) => (
+						<Route
+						key={route.path} path={route.path} exact={route.exact} component={route.sidebar} />
+					))}
+				</div>
+					<div style={{flex: 1, padding: '30px'}}>
+						{routes.map(({ path, exact, main}) => (
+							<Route
+								key={path}
+								path={path}
+								exact={exact}
+								component={main}
+							/>
+						))}
+					</div>
 				</div>
 			</Router>
 		)
